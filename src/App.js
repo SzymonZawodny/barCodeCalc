@@ -28,8 +28,19 @@ class App extends React.Component {
   }
 
   handleBarCode = name => (event) => {
-    this.setState({ [name]: event.target.value, array: [...this.state.array, parseInt((event.target.value).substring(6,11))] })
-    setTimeout(this.clearBarCodeInput, 500)
+    this.setState({
+      [name]: event.target.value,
+    })
+  }
+
+  handleBarCodeOnKey = (e) => {
+    if (e.key === 'Enter') {
+      this.setState({
+        array: [...this.state.array, parseInt((this.state.barCode).substring(7,12))],
+      }, () => {
+        this.clearBarCodeInput();
+      })
+    }
   }
 
   resetData = () => {
@@ -58,7 +69,7 @@ class App extends React.Component {
             <TextField value={this.state.productName} onChange={this.handleChange('productName')}  label="nazwa produktu" variant="outlined" />
           </div>
           <div className="Inserts">
-            <TextField value={this.state.barCode} onChange={this.handleBarCode('barCode')}  label="kod kreskowy" variant="outlined" />
+            <TextField value={this.state.barCode} onChange={this.handleBarCode('barCode')} onKeyDown={this.handleBarCodeOnKey}  label="kod kreskowy" variant="outlined" />
           </div>
           <div className="ListContainer">
             {this.state.array.map((i, index) => (<ListItem className="ListItem" key={index}><span className="ListCounter">{index + 1}</span><ListItemText className="ListItemText">{i/1000}kg</ListItemText></ListItem>))}
@@ -88,6 +99,7 @@ class App extends React.Component {
               (
                 <ListItem key={index}>
                   <ListItemText>{i}</ListItemText>
+                  <ListItemText>kg</ListItemText>
                 </ListItem>
             ))}
             </div>
